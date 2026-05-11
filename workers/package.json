@@ -1,0 +1,24 @@
+{
+  "name": "nutrient-app-workers",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers API for Nutrient App",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest"
+  },
+  "keywords": ["cloudflare", "workers", "hono", "usda"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hono": "^4.7.9"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250104.0",
+    "wrangler": "^3.101.0",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

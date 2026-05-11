@@ -1,0 +1,18 @@
+name = "nutrient-app-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# Workers Paid: Unlimited requests
+# Workers Free: 100,000 requests/day
+
+[env.production]
+name = "nutrient-app-api-production"
+# vars = { ENVIRONMENT = "production" }
+
+[env.development]
+name = "nutrient-app-api-dev"
+# vars = { ENVIRONMENT = "development" }
+
+# Secrets (set via: wrangler secret put USDA_API_KEY)
+# - USDA_API_KEY: Your USDA API Key from https://fdc.nal.usda.gov/api-key-signup.html
+# - ALLOWED_ORIGINS: Comma-separated list of allowed origins (e.g., "https://yourdomain.com,https://app.yourdomain.com")

@@ -1,0 +1,9 @@
+# Development environment variables
+# Copy this file to .dev.vars and fill in your actual values
+# .dev.vars is used by `wrangler dev` and is gitignored
+
+# Get your API key from: https://fdc.nal.usda.gov/api-key-signup.html
+USDA_API_KEY=DEMO_KEY
+
+# Optional: Comma-separated list of allowed origins
+# ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
