@@ -17,9 +17,23 @@ interface USDAFood {
   nutrients: USDANutrient[];
 }
 
+interface NutrientInfo {
+  nutrientName: string;
+  recommendedFoods: string[];
+}
+
+interface SearchInfo {
+  originalQuery: string;
+  translatedQuery: string;
+  wasTranslated: boolean;
+  searchType: 'food' | 'nutrient';
+  nutrientInfo?: NutrientInfo;
+}
+
 interface USDASearchResponse {
   foods: USDAFood[];
   totalHits: number;
+  searchInfo?: SearchInfo;
 }
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -27,17 +41,17 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
   <header>
     <h1>栄養素検索アプリ</h1>
-    <p class="subtitle">USDA FoodData Central から食品の栄養情報を検索</p>
+    <p class="subtitle">日本食品標準成分表 + USDA FoodData Central</p>
   </header>
 
   <div class="container">
     <div class="search-section">
-      <h2>食品を検索</h2>
+      <h2>食品・栄養素を検索</h2>
       <div class="search-box">
         <input
           type="text"
           id="usda-search"
-          placeholder="食品名を英語で入力 (例: apple, carrot, broccoli, chicken)"
+          placeholder="日本語でも英語でも検索可能 (例: 白米, 鶏むね, apple, chicken breast)"
         />
       </div>
       <div id="usda-results" class="results"></div>
@@ -45,8 +59,16 @@ app.innerHTML = `
   </div>
 
   <footer>
-    <p>Data provided by <a href="https://fdc.nal.usda.gov/" target="_blank">USDA FoodData Central</a></p>
+    <p>Data: <a href="https://www.mext.go.jp/a_menu/syokuhinseibun/" target="_blank">日本食品標準成分表</a> + <a href="https://fdc.nal.usda.gov/" target="_blank">USDA FoodData Central</a></p>
   </footer>
+
+  <div class="ad-section">
+    <a href="https://al.dmm.com/?lurl=https%3A%2F%2Fbook.dmm.com%2Fproduct%2F56954%2Fb950gshes00114%2F&af_id=tmmi-002&ch=reward_ranking&ch_id=package_text" rel="sponsored" target="_blank">
+      <img src="https://ebook-assets.dmm.com/digital/e-book/b950gshes00114/b950gshes00114pl.jpg" alt="ヒカルの碁 23" />
+      <span class="ad-title">ヒカルの碁 23</span>
+    </a>
+    <p class="ad-price">484円</p>
+  </div>
 `;
 
 const usdaSearchInput = document.getElementById('usda-search') as HTMLInputElement;
@@ -63,14 +85,14 @@ function debounce(func: () => void, delay: number, timeoutId: number | undefined
 
 async function searchUSDA(query: string) {
   if (!query.trim()) {
-    usdaResults.innerHTML = '<div class="no-results">食品名を英語で入力してください</div>';
+    usdaResults.innerHTML = '<div class="no-results">食品名や栄養素を入力してください<br><small>日本食例: 白米, 納豆, 鶏むね肉<br>英語例: apple, chicken breast</small></div>';
     return;
   }
 
-  usdaResults.innerHTML = '<div class="loading">USDA データベースを検索中...</div>';
+  usdaResults.innerHTML = '<div class="loading">データベースを検索中...</div>';
 
   try {
-    const response = await fetch(`${API_BASE_URL}/usda/search?query=${encodeURIComponent(query)}&pageSize=15`);
+    const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}&pageSize=15`);
     if (!response.ok) throw new Error('USDA API検索に失敗しました');
 
     const data: USDASearchResponse = await response.json();
@@ -80,9 +102,29 @@ async function searchUSDA(query: string) {
       return;
     }
 
+    const isNutrientSearch = data.searchInfo?.searchType === 'nutrient';
+    const nutrientInfo = data.searchInfo?.nutrientInfo;
+
+    const translationInfo = data.searchInfo?.wasTranslated
+      ? `<div class="translation-info">${
+          isNutrientSearch
+            ? `「${data.searchInfo.originalQuery}」(${nutrientInfo?.nutrientName || ''}) を多く含む食品を検索`
+            : `「${data.searchInfo.originalQuery}」→「${data.searchInfo.translatedQuery}」で検索しました`
+        }</div>`
+      : '';
+
+    const recommendedFoodsHtml = isNutrientSearch && nutrientInfo?.recommendedFoods
+      ? `<div class="recommended-foods">
+          <span class="recommended-label">おすすめ食品:</span>
+          ${nutrientInfo.recommendedFoods.map(f => `<span class="food-tag">${f}</span>`).join('')}
+        </div>`
+      : '';
+
     usdaResults.innerHTML = `
       <div class="results-header">
         <span>${data.totalHits.toLocaleString()} 件中 ${data.foods.length} 件を表示</span>
+        ${translationInfo}
+        ${recommendedFoodsHtml}
       </div>
       ${data.foods
         .map(
@@ -135,4 +177,4 @@ usdaSearchInput.addEventListener('input', () => {
   usdaSearchTimeout = debounce(() => searchUSDA(usdaSearchInput.value), 500, usdaSearchTimeout);
 });
 
-usdaResults.innerHTML = '<div class="no-results">食品名を英語で入力してください</div>';
+usdaResults.innerHTML = '<div class="no-results">食品名や栄養素を入力してください<br><small>日本食例: 白米, 納豆, 鶏むね肉<br>英語例: apple, chicken breast</small></div>';

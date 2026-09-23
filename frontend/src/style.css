@@ -84,6 +84,43 @@ h1 {
   font-weight: 600;
 }
 
+.translation-info {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.recommended-foods {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #fff3e0;
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.recommended-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e65100;
+}
+
+.food-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #ffcc80;
+  color: #bf360c;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 .result-item {
   padding: 20px;
   margin-bottom: 15px;
@@ -200,4 +237,39 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+.ad-section {
+  padding: 15px;
+  margin-top: 30px;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.ad-section:hover {
+  opacity: 1;
+}
+
+.ad-section a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+}
+
+.ad-section img {
+  max-width: 120px;
+  border-radius: 6px;
+}
+
+.ad-title {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.ad-price {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
 }
